@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:phoenix/Utils/providers/chatlistprovider.dart';
+import 'package:phoenix/Utils/providers/chatprovider.dart';
 import 'package:phoenix/Utils/providers/itemprovider.dart';
+import 'package:phoenix/Utils/providers/userprovider.dart';
 import 'package:phoenix/pages/SplashScreen.dart';
 import 'package:phoenix/pages/Viewitem.dart';
+import 'package:phoenix/pages/chatpage.dart';
 import 'package:phoenix/pages/frampage.dart';
 import 'package:phoenix/pages/loginscreen.dart';
 import 'package:phoenix/pages/register.dart';
@@ -11,7 +15,12 @@ import 'package:provider/provider.dart';
 void main() {
   runApp(
     MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => Itemprovider())],
+      providers: [
+        ChangeNotifierProvider(create: (_) => Userprovider()),
+        ChangeNotifierProvider(create: (_) => Itemprovider()),
+        ChangeNotifierProvider(create: (_) => ChatListProvider()),
+        ChangeNotifierProvider(create: (_) => Chatprovider()),
+      ],
       child: MyApp(),
     ),
   );
@@ -31,6 +40,11 @@ class MyApp extends StatelessWidget {
         Approutes.register: (context) => register(),
         Approutes.fram: (context) => frampage(),
         Approutes.view: (context) => Viewitem(),
+        Approutes.chatpage: (context) {
+          final id = ModalRoute.of(context)!.settings.arguments as int;
+
+          return Chatpage(reseverid: id);
+        },
       },
     );
   }

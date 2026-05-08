@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:phoenix/Utils/providers/userprovider.dart';
 import 'package:phoenix/Utils/service/Authservise.dart';
 import 'package:phoenix/Utils/validations/registervaldation.dart';
+import 'package:provider/provider.dart';
 
 class register extends StatefulWidget {
   const register({super.key});
@@ -172,12 +174,16 @@ class _registerState extends State<register> {
                   //             email: _emailcontroller.text,
                   //             password: _passcontroller.text,
                   //           );
-                  //           if (result != null && result.success) {
+                  //           if (result.success && result.user != null) {
                   //             ScaffoldMessenger.of(context).showSnackBar(
                   //               SnackBar(
                   //                 content: Text("Registered Successfully"),
                   //               ),
                   //             );
+                  //             Provider.of<Userprovider>(
+                  //               context,
+                  //               listen: false,
+                  //             ).setuser(result.user!);
                   //             Navigator.pushNamed(context, '/fram');
                   //           } else {
                   //             ScaffoldMessenger.of(context).showSnackBar(

@@ -3,9 +3,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:phoenix/Utils/class/ItemSellClass.dart';
+import 'package:phoenix/Utils/providers/userprovider.dart';
 import 'package:phoenix/Utils/service/addImageFuncation.dart';
 import 'package:phoenix/Utils/service/itemService.dart';
 import 'package:phoenix/Utils/validations/sellValidation.dart';
+import 'package:provider/provider.dart';
 
 class DonateOrsellpage extends StatefulWidget {
   const DonateOrsellpage({super.key});
@@ -37,6 +39,8 @@ class _DonateOrsellpageState extends State<DonateOrsellpage> {
 
   @override
   Widget build(BuildContext context) {
+    final userprovider = Provider.of<Userprovider>(context, listen: false);
+    final curentuser = userprovider.User;
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -274,6 +278,7 @@ class _DonateOrsellpageState extends State<DonateOrsellpage> {
                             Location: _locationcontroller.text,
                             type: Type,
                             uploadtime: DateTime.now(),
+                            User: curentuser!,
                           );
                           bool success = await Itemservice.additem(item);
 

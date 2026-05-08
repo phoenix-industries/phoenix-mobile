@@ -10,12 +10,12 @@ class Viewitem extends StatefulWidget {
 }
 
 class _ViewitemState extends State<Viewitem> {
+  int _selectedImage = 0;
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
     final item = ModalRoute.of(context)!.settings.arguments as ItemBuyclass;
-    int _selectedImage = 0;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: appbar(width: width),
@@ -38,6 +38,7 @@ class _ViewitemState extends State<Viewitem> {
           ],
         ),
         child: ListView(
+          physics: BouncingScrollPhysics(),
           children: [
             Container(
               height: 300,
@@ -96,7 +97,7 @@ class _ViewitemState extends State<Viewitem> {
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.01),
             Align(
-              alignment: Alignment.centerLeft, // أو center حسب رغبتك
+              alignment: Alignment.centerLeft,
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
@@ -214,9 +215,81 @@ class _ViewitemState extends State<Viewitem> {
             Text(item.description),
             SizedBox(height: MediaQuery.of(context).size.height * 0.04),
 
-            Text(
-              item.personName,
-              style: TextStyle(color: Color(0xfff0500a), fontSize: 38),
+            Container(
+              margin: EdgeInsets.symmetric(
+                horizontal: width * 0.05,
+                vertical: height * 0.05,
+              ),
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: Colors.grey.shade300, width: 1.5),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: .06),
+                    blurRadius: 12,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        height: 40,
+                        width: 40,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Color(0xfff0500a),
+                            width: 2,
+                          ),
+                          image: DecorationImage(
+                            image: item.User.image != null
+                                ? NetworkImage(item.User.image!)
+                                : const AssetImage('assets/images/logo.jpeg'),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: MediaQuery.of(context).size.width * 0.04),
+                      Text(
+                        item.User.name,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                  Center(
+                    child: Text(
+                      item.User.Bio!,
+                      style: TextStyle(color: Colors.black, fontSize: 13),
+                    ),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.location_city,
+                        color: Color(0xfff0500a),
+                        size: 20,
+                      ),
+                      SizedBox(width: MediaQuery.of(context).size.width * 0.01),
+                      Text(
+                        item.User.governorate!,
+                        style: TextStyle(color: Colors.black, fontSize: 18),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.05),
             Center(
@@ -231,11 +304,52 @@ class _ViewitemState extends State<Viewitem> {
                   ),
                 ),
                 child: InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      '/chatpage',
+                      arguments: item.User.Id,
+                    );
+                  },
+                  child: Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.chat_outlined, color: Colors.white),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.01,
+                        ),
+
+                        Text(
+                          'Chat',
+                          style: TextStyle(color: Colors.white, fontSize: 18),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+            Center(
+              child: Container(
+                height: 55,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: Color(0xfff43f06)),
+                ),
+                child: InkWell(
                   onTap: () {},
-                  child: const Center(
-                    child: Text(
-                      'Chat With Seller',
-                      style: TextStyle(color: Colors.white, fontSize: 18),
+                  child: Center(
+                    child: Center(
+                      child: Text(
+                        'BUY NOW',
+                        style: TextStyle(
+                          color: Color(0xfff43f06),
+                          fontSize: 18,
+                        ),
+                      ),
                     ),
                   ),
                 ),

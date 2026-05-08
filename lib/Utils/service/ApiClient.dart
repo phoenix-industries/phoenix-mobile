@@ -8,12 +8,12 @@ class Apiclient {
     ..interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
-          if (!options.path.contains('/auth/login')) {
-            String? token = await storage.gettoken();
-            if (token != null && token.isNotEmpty) {
-              options.headers["Authorization"] = 'Bearer $token';
-            }
+          final token = await storage.gettoken();
+
+          if (token != null && token.isNotEmpty) {
+            options.headers["Authorization"] = "Bearer $token";
           }
+
           return handler.next(options);
         },
       ),

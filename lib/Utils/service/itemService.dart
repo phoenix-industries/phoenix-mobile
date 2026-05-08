@@ -1,6 +1,8 @@
 import 'package:phoenix/Utils/class/ItemSellClass.dart';
 import 'package:phoenix/Utils/class/itemBuyclass.dart';
+import 'package:phoenix/Utils/providers/userprovider.dart';
 import 'package:phoenix/Utils/service/ApiClient.dart';
+import 'package:provider/provider.dart';
 
 class Itemservice {
   static Future<List<ItemBuyclass>> getrecomendationItem() async {

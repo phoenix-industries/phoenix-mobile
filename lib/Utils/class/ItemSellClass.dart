@@ -1,3 +1,5 @@
+import 'package:phoenix/Utils/class/UserClass.dart';
+
 class Itemsellclass {
   List<String> images;
   String productTitle;
@@ -9,6 +11,7 @@ class Itemsellclass {
   String Location;
   String type;
   DateTime uploadtime;
+  UserClass User;
 
   Itemsellclass({
     required this.images,
@@ -21,6 +24,7 @@ class Itemsellclass {
     this.Price,
     required this.type,
     required this.uploadtime,
+    required this.User,
   });
 
   Map<String, dynamic> toJson() => {
@@ -33,6 +37,7 @@ class Itemsellclass {
     "images": images,
     "price": Price,
     'uploadTime': uploadtime.toIso8601String(),
+    'User': User.toJson(),
   };
 
   factory Itemsellclass.fromJson(Map<String, dynamic> json) {
@@ -47,6 +52,7 @@ class Itemsellclass {
       Brand: json['Brand'],
       type: json['type'] ?? '',
       uploadtime: DateTime.parse(json['uploadtime']),
+      User: UserClass.fromJson(json['user']),
     );
   }
 }

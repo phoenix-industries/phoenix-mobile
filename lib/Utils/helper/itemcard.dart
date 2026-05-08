@@ -39,7 +39,7 @@ class Itemcard extends StatelessWidget {
               ),
             ),
             Text(
-              item.personName,
+              item.User.name,
               style: TextStyle(fontSize: 15, color: Colors.black),
             ),
             const Spacer(),

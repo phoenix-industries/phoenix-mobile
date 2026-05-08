@@ -4,4 +4,5 @@ class Approutes {
   static final register = '/register';
   static final fram = '/fram';
   static final view = '/itemview';
+  static final chatpage = '/chatpage';
 }

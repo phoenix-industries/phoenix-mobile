@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:phoenix/Utils/providers/userprovider.dart';
 import 'package:phoenix/Utils/service/Authservise.dart';
+import 'package:phoenix/Utils/service/usreservice.dart';
 import 'package:phoenix/Utils/validations/registervaldation.dart';
+import 'package:provider/provider.dart';
 
 class Loginscreen extends StatefulWidget {
   const Loginscreen({super.key});
@@ -14,6 +17,7 @@ class _LoginscreenState extends State<Loginscreen> {
   final TextEditingController _emailcontroller = TextEditingController();
   final TextEditingController _passcontroller = TextEditingController();
   final Authservise authservise = Authservise();
+  final Usreservice usreservice = Usreservice();
 
   @override
   void dispose() {
@@ -113,28 +117,74 @@ class _LoginscreenState extends State<Loginscreen> {
                   ),
                 ),
                 child: InkWell(
-                  onTap:
-                      ()
-                      //   Navigator.pushNamed(context, '/fram');
-                      // },
-                      async {
-                        if (_formKey.currentState!.validate()) {
-                          final result = await authservise.login(
-                            username: _emailcontroller.text,
-                            password: _passcontroller.text,
-                          );
-                          if (result.success) {
-                            print("Login Success, navigating...");
-                            Navigator.pushNamed(context, '/fram');
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(result?.message ?? "Error"),
-                              ),
-                            );
-                          }
+                  onTap: () async {
+                    final isValid = _formKey.currentState!.validate();
+                    debugPrint("🔥 STEP 2: Form valid = $isValid");
+
+                    if (!isValid) {
+                      debugPrint("❌ STOP: Form validation failed");
+                      return;
+                    }
+
+                    try {
+                      debugPrint("🔥 STEP 3: Calling API...");
+
+                      final result = await authservise.login(
+                        username: _emailcontroller.text,
+                        password: _passcontroller.text,
+                      );
+
+                      debugPrint("🔥 STEP 4: API returned");
+                      debugPrint("Success: ${result.success}");
+                      debugPrint("Message: ${result.message}");
+
+                      if (result.success) {
+                        final user = await usreservice.getCurrentUser();
+                        if (user != null) {
+                          Provider.of<Userprovider>(
+                            context,
+                            listen: false,
+                          ).setuser(user);
+
+                          Navigator.pushNamed(context, '/fram');
                         }
-                      },
+                      } else {
+                        debugPrint("❌ LOGIN FAILED");
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(result.message ?? "Error")),
+                        );
+                      }
+                    } catch (e) {
+                      debugPrint("💥 ERROR: $e");
+                    }
+                  },
+                  //   onTap:
+                  //       ()
+                  //       // {
+                  //       //   Navigator.pushNamed(context, '/fram');
+                  //       // },
+                  //       async {
+                  //         if (_formKey.currentState!.validate()) {
+                  //           final result = await authservise.login(
+                  //             username: _emailcontroller.text,
+                  //             password: _passcontroller.text,
+                  //           );
+                  //           if (result.success && result.user != null) {
+                  //             Provider.of<Userprovider>(
+                  //               context,
+                  //               listen: false,
+                  //             ).setuser(result.user!);
+                  //             Navigator.pushNamed(context, '/fram');
+                  //           } else {
+                  //             ScaffoldMessenger.of(context).showSnackBar(
+                  //               SnackBar(
+                  //                 content: Text(result?.message ?? "Error"),
+                  //               ),
+                  //             );
+                  //           }
+                  //         }
+                  //       },
                   child: const Center(
                     child: Text(
                       'Sign in',

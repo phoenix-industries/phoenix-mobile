@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:phoenix/Utils/class/Authclass.dart';
+import 'package:phoenix/Utils/class/UserClass.dart';
 import 'package:phoenix/Utils/service/ApiClient.dart';
 import 'package:phoenix/Utils/service/sourseStorageservics.dart';
 
@@ -80,19 +81,21 @@ class Authservise {
         data: {"username": "michaelw", "password": "michaelwpass"},
         options: Options(headers: {'Content-Type': 'application/json'}),
       );
-
-      final accesstoken = response.data['token'];
+      final accesstoken = response.data['accessToken'];
+      print("😂LOGIN TOKEN: $accesstoken");
 
       if (accesstoken != null) {
         await _storage.savetoken(accesstoken);
+        print('done');
       }
 
-      return Authclass.fromJson(response.data);
-    } on DioException catch (e) {
       return Authclass(
-        success: false,
-        message: e.response?.data["message"] ?? "login field",
+        success: true,
+        message: "Login Success",
+        token: accesstoken,
       );
+    } catch (e) {
+      return Authclass(success: false, message: "Login Failed");
     }
   }
 }
