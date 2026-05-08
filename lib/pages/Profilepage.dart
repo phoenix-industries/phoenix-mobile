@@ -82,11 +82,11 @@ class ProfilePage extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),
-      backgroundColor: Colors.transparent, // important
-      shadowColor: Colors.transparent,     // remove shadow
+      backgroundColor: Colors.transparent,
+      shadowColor: Colors.transparent,
     ),
     onPressed: () {
-      Navigator.pushReplacementNamed(context, '/fram');
+      Navigator.pushReplacementNamed(context, '/edit_profile');
     },
     child: Ink(
       decoration: BoxDecoration(
@@ -101,7 +101,7 @@ class ProfilePage extends StatelessWidget {
         alignment: Alignment.center,
         padding: const EdgeInsets.symmetric(vertical: 14),
         child: const Text(
-          "LET'S START",
+          "Edit Profile",
           style: TextStyle(
             fontSize: 18,
             color: Colors.white,

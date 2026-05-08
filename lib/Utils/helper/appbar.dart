@@ -77,9 +77,11 @@ class appbar extends StatelessWidget implements PreferredSizeWidget {
            waitDuration: const Duration(milliseconds: 500), // delay before showing
           child: IconButton(
          onPressed: () {
-            Navigator.popUntil(context, (route) => route.isFirst);
-            Navigator.pushNamed(context, '/profile');
-         },
+            final currentRoute = ModalRoute.of(context)?.settings.name;
+            if (currentRoute != '/profile') {
+                Navigator.pushNamed(context, '/profile');
+               }
+            },
           icon: const Icon(Icons.person),
             ),
           )

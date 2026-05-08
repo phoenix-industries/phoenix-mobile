@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:phoenix/Utils/providers/Themeprovider.dart';
 import 'package:phoenix/SettingsPages/Darkmodetoggle.dart';
 import 'package:phoenix/SettingsPages/Accountscreen.dart';
+import 'package:phoenix/SettingsPages/Supportscreen.dart';
 
 
 class SettingsPage extends StatelessWidget {
@@ -62,6 +63,10 @@ class SettingsPage extends StatelessWidget {
             subtitle: const Text("Get help or contact support"),
             onTap: () {
               // Navigate to Help & Support
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const HelpSupportPage()),
+              );
             },
           ),
           const Divider(),
