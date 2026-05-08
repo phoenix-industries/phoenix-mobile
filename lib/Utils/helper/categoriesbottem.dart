@@ -46,14 +46,14 @@ class CategoriesbottemState extends State<Categoriesbottem> {
             });
             widget.oncategoryslected(category);
           },
-          selectedColor: Colors.orange,
-          backgroundColor: Colors.white,
+          selectedColor: Color(0xfff0500a),
+          backgroundColor: Theme.of(context).cardColor,
           labelStyle: TextStyle(
-            color: isSelected ? Colors.white : Colors.orange,
+            color: isSelected ? Colors.white : Color(0xfff0500a),
           ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
-            side: BorderSide(color: Colors.orange),
+            side: BorderSide(color: Color(0xfff0500a)),
           ),
         );
       }).toList(),

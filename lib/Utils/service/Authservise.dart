@@ -50,6 +50,8 @@ class Authservise {
     required String phone,
     required String email,
     required String password,
+    required String gender,
+    required String age,
   }) async {
     try {
       final response = await Apiclient.dio.post(
@@ -59,6 +61,8 @@ class Authservise {
           'phone': phone,
           'email': email,
           'password': password,
+          'gender': gender,
+          'age': age,
         },
       );
       return Authclass.fromJson(response.data);

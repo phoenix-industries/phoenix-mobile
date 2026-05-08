@@ -10,8 +10,8 @@ class Itemcard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(18),
-        color: Colors.transparent,
-        border: Border.all(color: const Color.fromARGB(255, 195, 194, 194)),
+        color: Theme.of(context).cardColor,
+        border: Border.all(color: Theme.of(context).colorScheme.onSurfaceVariant, width: 0.5),
       ),
       width: MediaQuery.of(context).size.width * 0.5,
       height: MediaQuery.of(context).size.height * 0.3,
@@ -19,14 +19,26 @@ class Itemcard extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            Expanded(
-              flex: 4,
-              child: Image.network(
-                item.images[0],
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
-            ),
+            Container(
+              decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              color: Colors.white,
+              border: Border.all(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+              width: 0.5,
+             ),
+             ),
+            child: ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+             child: Image.network(
+            item.images[0],
+            width: double.infinity,
+            height: MediaQuery.of(context).size.height * 0.15, // fixed height
+            fit: BoxFit.cover,
+             ),
+             ),
+               ),
+
             const SizedBox(height: 8),
             Text(
               item.itemName,
@@ -34,13 +46,13 @@ class Itemcard extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.black,
+                color: Theme.of(context).colorScheme.onSurface,
                 fontWeight: FontWeight.bold,
               ),
             ),
             Text(
               item.personName,
-              style: TextStyle(fontSize: 15, color: Colors.black),
+              style: TextStyle(fontSize: 15, color: Theme.of(context).colorScheme.onSurface),
             ),
             const Spacer(),
             Row(

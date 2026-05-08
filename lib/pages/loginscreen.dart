@@ -1,6 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:phoenix/Utils/service/Authservise.dart';
 import 'package:phoenix/Utils/validations/registervaldation.dart';
+import 'package:phoenix/Utils/providers/Themeprovider.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+Future<void> saveLoginTime() async {
+  final prefs = await SharedPreferences.getInstance();
+  final now = DateTime.now();
+  await prefs.setString('lastLogin', now.toIso8601String());
+}
 
 class Loginscreen extends StatefulWidget {
   const Loginscreen({super.key});
@@ -14,6 +23,7 @@ class _LoginscreenState extends State<Loginscreen> {
   final TextEditingController _emailcontroller = TextEditingController();
   final TextEditingController _passcontroller = TextEditingController();
   final Authservise authservise = Authservise();
+  bool _passwordVisible = true;
 
   @override
   void dispose() {
@@ -27,19 +37,41 @@ class _LoginscreenState extends State<Loginscreen> {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
-      backgroundColor: Colors.white,
+      
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.white,
-        title: Center(
-          child: Image.asset(
-            'assets/images/logo.jpeg',
-            height: width * 0.08,
-            width: width * 0.08,
-          ),
-        ),
+  automaticallyImplyLeading: false,
+  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+  shape: Border(
+    bottom: BorderSide(
+      color: Theme.of(context).colorScheme.outline,
+      width: 1.5,
+    ),
+  ),
+  title: Center(
+    child: Image.asset(
+      'assets/images/Phoenix.png',
+      height: width * 0.08,
+      width: width * 0.08,
+    ),
+  ),
+  actions: [
+    IconButton(
+      icon: Icon(
+        Theme.of(context).brightness == Brightness.dark
+            ? Icons.dark_mode
+            : Icons.light_mode,
+        color: Theme.of(context).iconTheme.color,
       ),
+      onPressed: () {
+          final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+          final isDark = Theme.of(context).brightness != Brightness.dark;
+          themeProvider.toggleTheme(isDark);
+       },
+    ),
+  ],
+),
+      
       body: Container(
         margin: EdgeInsets.symmetric(
           horizontal: width * 0.05,
@@ -47,9 +79,9 @@ class _LoginscreenState extends State<Loginscreen> {
         ),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.grey.shade300, width: 1.5),
+          border: Border.all(color: Theme.of(context).colorScheme.outline, width: 1.5),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: .06),
@@ -66,7 +98,7 @@ class _LoginscreenState extends State<Loginscreen> {
               Text(
                 'Sign In',
                 style: TextStyle(
-                  color: Colors.black,
+                  color: Theme.of(context).colorScheme.onSurface,
                   fontWeight: FontWeight.bold,
                   fontSize: width * 0.07,
                 ),
@@ -74,7 +106,7 @@ class _LoginscreenState extends State<Loginscreen> {
               SizedBox(height: height * 0.01),
               Text(
                 'Access your account to manage exchanges',
-                style: TextStyle(color: Colors.grey),
+                style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
               ),
               SizedBox(height: height * 0.04),
               TextFormField(
@@ -86,19 +118,31 @@ class _LoginscreenState extends State<Loginscreen> {
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(16)),
+                    borderSide: BorderSide(color: Color(0xfff0500a), width: 2),),
+                    floatingLabelStyle: TextStyle(color: Color(0xfff0500a)),
                 ),
               ),
               SizedBox(height: height * 0.04),
               TextFormField(
-                obscureText: true,
+                obscureText: _passwordVisible,
                 validator: Registervaldation.validatePassword,
                 controller: _passcontroller,
                 decoration: InputDecoration(
+                  suffixIcon: IconButton(
+                  icon: Icon(_passwordVisible ? Icons.visibility_off : Icons.visibility),
+                  onPressed: () => setState(() => _passwordVisible = !_passwordVisible),
+                ),
                   labelText: 'Password',
                   hintText: '........',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(16)),
+                    borderSide: BorderSide(color: Color(0xfff0500a), width: 2),),
+                    floatingLabelStyle: TextStyle(color: Color(0xfff0500a)),
                 ),
               ),
               SizedBox(height: height * 0.04),
@@ -125,7 +169,11 @@ class _LoginscreenState extends State<Loginscreen> {
                           );
                           if (result.success) {
                             print("Login Success, navigating...");
-                            Navigator.pushNamed(context, '/fram');
+                            await saveLoginTime();
+                            Navigator.pushNamedAndRemoveUntil(
+                            context,'/onboarding',
+                            (route) => false,
+                          );
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
@@ -168,3 +216,4 @@ class _LoginscreenState extends State<Loginscreen> {
     );
   }
 }
+

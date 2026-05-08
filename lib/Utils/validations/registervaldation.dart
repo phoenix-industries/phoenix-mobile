@@ -23,17 +23,23 @@ class Registervaldation {
     return null;
   }
 
-  static String? validatePassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter password';
-    }
-    if (value.length < 6) {
-      return 'Password must be at least 6 characters';
+   static String? validatePassword(String? value) {
+    if (value == null || value.isEmpty) return 'Password is required';
+
+    // Require: 1 uppercase, 1 lowercase, 1 digit, 1 special char, min length 8
+    final pattern = r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#\$&*~]).{8,}$';
+    final regExp = RegExp(pattern);
+
+    if (!regExp.hasMatch(value)) {
+      return 'Password must be at least 8 chars and include uppercase, lowercase, number, and special char';
     }
     return null;
   }
 
   static String? validateConfirmPassword(String? value, String password) {
+    if (value == null || value.isEmpty) {
+      return 'Please confirm your password';
+    }
     if (value != password) {
       return 'Passwords do not match';
     }
@@ -46,6 +52,17 @@ class Registervaldation {
     }
     if (value.length < 11) {
       return 'Enter valid phone number';
+    }
+    return null;
+  }
+
+  static String? validateAge(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your age';
+    }
+    final age = int.tryParse(value);
+    if (age == null || age < 18) {
+      return 'You must be at least 18 years old';
     }
     return null;
   }

@@ -10,14 +10,16 @@ class Viewitem extends StatefulWidget {
 }
 
 class _ViewitemState extends State<Viewitem> {
+    final PageController _pageController = PageController();
+    int _selectedImage = 0;
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
     final item = ModalRoute.of(context)!.settings.arguments as ItemBuyclass;
-    int _selectedImage = 0;
+    
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: appbar(width: width),
       body: Container(
         margin: EdgeInsets.symmetric(
@@ -26,9 +28,9 @@ class _ViewitemState extends State<Viewitem> {
         ),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.grey.shade300, width: 1.5),
+          border: Border.all(color: Theme.of(context).colorScheme.outline, width: 1.5),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: .06),
@@ -73,7 +75,8 @@ class _ViewitemState extends State<Viewitem> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(item.images.length, (index) {
-                return Container(
+                return AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
                   margin: const EdgeInsets.symmetric(
                     horizontal: 3,
                     vertical: 8,
@@ -100,9 +103,9 @@ class _ViewitemState extends State<Viewitem> {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Theme.of(context).cardColor,
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: Colors.grey.shade300, width: 1),
+                  border: Border.all(color: Theme.of(context).colorScheme.outline, width: 1),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withValues(alpha: .06),
@@ -117,7 +120,7 @@ class _ViewitemState extends State<Viewitem> {
                     Icon(Icons.sell, color: Color(0xfff0500a), size: 18),
                     Text(
                       item.category,
-                      style: TextStyle(color: Colors.black, fontSize: 18),
+                      style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontSize: 18),
                     ),
                   ],
                 ),
@@ -135,10 +138,10 @@ class _ViewitemState extends State<Viewitem> {
                     ),
 
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Theme.of(context).cardColor,
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
-                        color: Colors.grey.shade300,
+                        color: Theme.of(context).colorScheme.outline,
                         width: 1.5,
                       ),
                       boxShadow: [
@@ -159,7 +162,7 @@ class _ViewitemState extends State<Viewitem> {
                         ),
                         Text(
                           item.time,
-                          style: TextStyle(color: Colors.black, fontSize: 18),
+                          style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontSize: 18),
                         ),
                       ],
                     ),

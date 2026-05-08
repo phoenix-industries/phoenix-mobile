@@ -3,6 +3,7 @@ import 'package:phoenix/Utils/helper/categoriesbottem.dart';
 import 'package:phoenix/Utils/helper/itemcard.dart';
 import 'package:phoenix/Utils/providers/itemprovider.dart';
 import 'package:provider/provider.dart';
+import 'package:phoenix/Utils/helper/appbar.dart';
 
 class Marketpage extends StatefulWidget {
   const Marketpage({super.key});
@@ -29,7 +30,7 @@ class _MarketpageState extends State<Marketpage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: ListView(
@@ -53,7 +54,7 @@ class _MarketpageState extends State<Marketpage> {
             Text(
               'Discover items donated or sold by the community near you',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 15, color: Colors.black),
+              style: TextStyle(fontSize: 15, color: Theme.of(context).colorScheme.onSurface),
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.01),
             Padding(
@@ -67,10 +68,10 @@ class _MarketpageState extends State<Marketpage> {
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30),
-                    borderSide: BorderSide.none,
+                    borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurfaceVariant, width: 0.5),
                   ),
                   filled: true,
-                  fillColor: const Color.fromARGB(255, 246, 246, 246),
+                  fillColor: Theme.of(context).cardColor,
                   suffixIcon: Container(
                     height: MediaQuery.of(context).size.height * 0.02,
                     width: MediaQuery.of(context).size.height * 0.1,

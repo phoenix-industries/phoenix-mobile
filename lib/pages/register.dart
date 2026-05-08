@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:phoenix/Utils/service/Authservise.dart';
 import 'package:phoenix/Utils/validations/registervaldation.dart';
+import 'package:phoenix/Utils/helper/checklistwidget.dart';
+import 'package:phoenix/Utils/helper/genderselector.dart';
 
 class register extends StatefulWidget {
   const register({super.key});
@@ -15,6 +17,11 @@ class _registerState extends State<register> {
   final TextEditingController _namecontroller = TextEditingController();
   final TextEditingController _confrimpassword = TextEditingController();
   final TextEditingController _phoneNumber = TextEditingController();
+  final TextEditingController _age = TextEditingController();
+  String selectedGender = "Male";
+  bool _passwordVisible = true;
+
+
   final _formKey = GlobalKey<FormState>();
   @override
   void dispose() {
@@ -23,20 +30,28 @@ class _registerState extends State<register> {
     _namecontroller.dispose();
     _confrimpassword.dispose();
     _phoneNumber.dispose();
+    _age.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        shape: Border(
+          bottom: BorderSide(
+            color: Theme.of(context).colorScheme.outline,
+            width: 1.5,
+          ),
+        ),
+        
         title: Center(
           child: Image.asset(
-            'assets/images/logo.jpeg',
+            'assets/images/Phoenix.png',
             height: MediaQuery.of(context).size.height * 0.08,
             width: MediaQuery.of(context).size.height * 0.08,
           ),
@@ -46,9 +61,9 @@ class _registerState extends State<register> {
         margin: const EdgeInsets.fromLTRB(16, 40, 16, 40),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.grey.shade300, width: 1.5),
+          border: Border.all(color: Theme.of(context).colorScheme.outline, width: 1.5),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: .06),
@@ -65,7 +80,7 @@ class _registerState extends State<register> {
               Text(
                 'create Account',
                 style: TextStyle(
-                  color: Colors.black,
+                  color: Theme.of(context).colorScheme.onSurface,
                   fontWeight: FontWeight.bold,
                   fontSize: 30,
                 ),
@@ -73,7 +88,7 @@ class _registerState extends State<register> {
               SizedBox(height: MediaQuery.of(context).size.height * 0.01),
               Text(
                 'fill in your details to get started',
-                style: TextStyle(color: Colors.grey),
+                style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.04),
               TextFormField(
@@ -85,6 +100,10 @@ class _registerState extends State<register> {
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(16)),
+                    borderSide: BorderSide(color: Color(0xfff0500a), width: 2),),
+                    floatingLabelStyle: TextStyle(color: Color(0xfff0500a)),
                 ),
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.04),
@@ -98,7 +117,36 @@ class _registerState extends State<register> {
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(16)),
+                    borderSide: BorderSide(color: Color(0xfff0500a), width: 2),),
+                    floatingLabelStyle: TextStyle(color: Color(0xfff0500a)),
                 ),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+              TextFormField(
+                controller: _age,
+                validator: Registervaldation.validateAge,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: 'Age',
+                  hintText: '18',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(16)),
+                    borderSide: BorderSide(color: Color(0xfff0500a), width: 2),),
+                    floatingLabelStyle: TextStyle(color: Color(0xfff0500a)),
+                ),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+              GenderSelector(
+                      onChanged: (value) {
+                    setState(() {
+                    selectedGender = value; // store it in your register state
+                          });
+                },
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.04),
               TextFormField(
@@ -111,21 +159,37 @@ class _registerState extends State<register> {
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(16)),
+                    borderSide: BorderSide(color: Color(0xfff0500a), width: 2),),
+                    floatingLabelStyle: TextStyle(color: Color(0xfff0500a)),
                 ),
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.04),
               TextFormField(
-                obscureText: true,
+                obscureText: _passwordVisible,
                 validator: Registervaldation.validatePassword,
                 controller: _passcontroller,
+                onChanged: (_) => setState(() {}), // triggers rebuild
                 decoration: InputDecoration(
+                  suffixIcon: IconButton(
+                  icon: Icon(_passwordVisible ? Icons.visibility_off : Icons.visibility),
+                  onPressed: () => setState(() => _passwordVisible = !_passwordVisible),
+                ),
                   labelText: 'Password',
                   hintText: '........',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(16)),
+                    borderSide: BorderSide(color: Color(0xfff0500a), width: 2),),
+                    floatingLabelStyle: TextStyle(color: Color(0xfff0500a)),
                 ),
               ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+              // Dynamic checklist
+               PasswordChecklist(password: _passcontroller.text),
               SizedBox(height: MediaQuery.of(context).size.height * 0.04),
               TextFormField(
                 obscureText: true,
@@ -135,11 +199,19 @@ class _registerState extends State<register> {
                 ),
                 controller: _confrimpassword,
                 decoration: InputDecoration(
+                  suffixIcon: IconButton(
+                  icon: Icon(_passwordVisible ? Icons.visibility_off : Icons.visibility),
+                  onPressed: () => setState(() => _passwordVisible = !_passwordVisible),
+                ),
                   labelText: 'confirm Password',
                   hintText: '........',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(16)),
+                    borderSide: BorderSide(color: Color(0xfff0500a), width: 2),),
+                    floatingLabelStyle: TextStyle(color: Color(0xfff0500a)),
                 ),
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.04),

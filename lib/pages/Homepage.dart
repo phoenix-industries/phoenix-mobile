@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:phoenix/Utils/helper/itemcard.dart';
 import 'package:phoenix/Utils/providers/itemprovider.dart';
 import 'package:provider/provider.dart';
+import 'package:phoenix/Utils/helper/appbar.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -22,7 +23,6 @@ class _HomepageState extends State<Homepage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: ListView(
@@ -61,14 +61,14 @@ class _HomepageState extends State<Homepage> {
             Text(
               'Discover items donated or sold by the community near you',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 15, color: Colors.black),
+              style: TextStyle(fontSize: 15, color: Theme.of(context).iconTheme.color),
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.01),
             Row(
               children: [
                 Text(
                   'Recommended',
-                  style: TextStyle(color: Colors.black, fontSize: 30),
+                  style: TextStyle(color: Theme.of(context).iconTheme.color, fontSize: 30),
                 ),
                 Text(
                   ' for you',
