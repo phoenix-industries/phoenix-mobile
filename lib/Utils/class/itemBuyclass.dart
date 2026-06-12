@@ -1,53 +1,63 @@
-import 'package:phoenix/Utils/class/UserClass.dart';
-
 class ItemBuyclass {
   String id;
-  List<String> images;
   String itemName;
-  String price;
-  String category;
-  String time;
-  String Condation;
-  String location;
+  int price;
+  String categoryId;
+  String categoryName;
+  DateTime time;
+  String condition;
+  bool donated;
   String description;
-  UserClass User;
+  String userId;
+  String userName;
+  String userCity;
+  String userGovernorate;
+  String userAddress;
+  String? brand;
+  String? imageId;
 
   ItemBuyclass({
     required this.id,
-    required this.images,
     required this.itemName,
     required this.price,
+    required this.categoryId,
+    required this.categoryName,
     required this.time,
-    required this.Condation,
-    required this.category,
-    required this.location,
+    required this.condition,
+    required this.donated,
     required this.description,
-    required this.User,
+    required this.userId,
+    required this.userName,
+    required this.userCity,
+    required this.userGovernorate,
+    required this.userAddress,
+    this.brand,
+    this.imageId,
   });
 
   factory ItemBuyclass.fromJson(Map<String, dynamic> json) {
+    final category = json['category'] ?? {};
+    final user = json['user'] ?? {};
+
     return ItemBuyclass(
-      id: json['id'].toString(),
-      images: List<String>.from(json['images'] ?? []),
-      itemName: json['title'] ?? 'no name',
-      price: json['price'].toString(),
-      category: json['category'] ?? 'no category',
-      Condation: json['condation'] ?? 'no',
-      time: json['time'] ?? 'no',
-      location: json['location'] ?? 'no',
-      description: json['description'] ?? 'no',
-      User: UserClass(
-        Id: 1,
-        name: "Phoenix User",
-        email: "phoenix@test.com",
-        phone: "01000000000",
-        age: 25,
-        image: null,
-        Bio:
-            "Demo user hdhduuhefjkelfawkdjwfejhfurhgtowiefiwjsdcbshegrewiufhawbdhsgeiuruehrfhawdbchygeriwe",
-        governorate: "Cairo",
-        city: 'maadi'
-      ),
+      id: json['id'] ?? '',
+      itemName: json['name'] ?? '',
+      price: (json['price'] ?? 0) is int
+          ? json['price']
+          : int.tryParse(json['price'].toString()) ?? 0,
+      categoryId: category['id'] ?? '',
+      categoryName: category['name'] ?? '',
+      time: DateTime.parse(json['created_at']),
+      condition: json['condition'] ?? '',
+      donated: json['donated'] ?? false,
+      description: json['description'] ?? '',
+      userId: user['id'] ?? '',
+      userName: user['name'] ?? '',
+      userCity: user['city'] ?? '',
+      userGovernorate: user['governorate'] ?? '',
+      userAddress: user['address'] ?? '',
+      brand: json['brand'],
+      imageId: json['image_id'],
     );
   }
 }

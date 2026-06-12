@@ -4,6 +4,7 @@ import 'package:phoenix/Utils/class/chatsummery.dart';
 class Chatsummeybubble extends StatelessWidget {
   final Chatsummery chatsummery;
   final VoidCallback ontap;
+
   const Chatsummeybubble({
     super.key,
     required this.chatsummery,
@@ -18,41 +19,48 @@ class Chatsummeybubble extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Row(
           children: [
-            CircleAvatar(
+            const CircleAvatar(
               radius: 25,
               backgroundColor: Colors.grey,
-              backgroundImage: chatsummery.image != null
-                  ? NetworkImage(chatsummery.image!)
-                  : const AssetImage('assets/images/logo.jpeg') as ImageProvider,
+              backgroundImage: AssetImage('assets/images/logo.jpeg'),
             ),
+
             const SizedBox(width: 12),
+
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  /// TOP ROW
                   Row(
-                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        chatsummery.name,
-                        style: TextStyle(
+                        chatsummery.title,
+                        style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
                         ),
                       ),
-                      
+
                       Text(
-                        chatsummery.time,
-                        style: TextStyle(fontSize: 12, color: Colors.grey),
+                        _formatTime(chatsummery.lastMessageTime),
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 12),
+
+                  const SizedBox(height: 6),
+
+                  /// LAST MESSAGE
                   Text(
-                    chatsummery.lastmessagel,
+                    chatsummery.lastMessage,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 14, color: Colors.grey),
+                    style: const TextStyle(fontSize: 14, color: Colors.grey),
                   ),
                 ],
               ),
@@ -61,5 +69,14 @@ class Chatsummeybubble extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _formatTime(DateTime? time) {
+    if (time == null) return '';
+
+    final hour = time.hour.toString().padLeft(2, '0');
+    final minute = time.minute.toString().padLeft(2, '0');
+
+    return "$hour:$minute";
   }
 }

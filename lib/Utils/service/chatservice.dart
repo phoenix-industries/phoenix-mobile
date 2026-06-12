@@ -4,14 +4,29 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class Chatservice {
   late IO.Socket socket;
-   Future<List<Chatclass?>> getallchat() async {
+
+  Future<List<ChatMessage>> getChatHistory(String roomId) async {
     try {
       final response = await Apiclient.dio.get(
-        '', //endpointchat
+        '/chat/v1/rooms/$roomId/history',
       );
+
+      final data = response.data['data'] ?? [];
+
+      return (data as List).map((e) => ChatMessage.fromJson(e)).toList();
+    } catch (e) {
+      print("History Error: $e");
+      return [];
+    }
+  }
+
+  Future<List<ChatMessage>> getallchat() async {
+    try {
+      final response = await Apiclient.dio.get('/chat/v1/rooms');
+      print('😒${response.data}');
       if (response.statusCode == 200) {
-        List data = response.data['chats'];
-        return data.map((chats) => Chatclass.fromJson(chats)).toList();
+        final data = response.data['chats'] as List;
+        return data.map((chat) => ChatMessage.fromJson(chat)).toList();
       } else {
         throw Exception('Failed to load chat');
       }
@@ -23,7 +38,7 @@ class Chatservice {
 
   void connect() {
     socket = IO.io(
-      '', //URL
+      'ws://localhost:5000/chat/v1/connect',
       IO.OptionBuilder()
           .setTransports(['websocket'])
           .enableAutoConnect()
@@ -33,20 +48,16 @@ class Chatservice {
     socket.connect();
   }
 
-  void sendmessage(Chatclass message) {
-    socket.emit(
-      '', //endpoint
-      message.toJson(),
-    );
+  // ✅ send Message wrapped correctly
+  void sendmessage(ChatMessage message) {
+    socket.emit('message', {'type': 'chat', 'data': message.toJson()});
   }
 
-  void onmessage(Function(Chatclass message) callback) {
-    socket.on(
-      '', //endpoint
-      (data) {
-        final msg = Chatclass.fromJson(data);
-        callback(msg);
-      },
-    );
+  // ✅ FIX: now returns Message (not ChatMessage directly)
+  void onmessage(Function(Message message) callback) {
+    socket.on('message', (data) {
+      final msg = Message.fromJson(data);
+      callback(msg);
+    });
   }
 }

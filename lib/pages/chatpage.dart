@@ -8,7 +8,7 @@ import 'package:phoenix/Utils/service/chatservice.dart';
 import 'package:provider/provider.dart';
 
 class Chatpage extends StatefulWidget {
-  final int reseverid;
+  final String reseverid;
   const Chatpage({super.key, required this.reseverid});
 
   @override
@@ -16,70 +16,97 @@ class Chatpage extends StatefulWidget {
 }
 
 class _ChatpageState extends State<Chatpage> {
-  Chatservice chatservice = Chatservice();
+  final Chatservice chatservice = Chatservice();
   final TextEditingController _messagecontroller = TextEditingController();
-  int? chatId;
+
   @override
   void initState() {
     super.initState();
 
-    final provider = context.read<Chatprovider>();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final provider = context.read<Chatprovider>();
 
-    provider.loadAllChat();
-    chatservice.connect();
-    chatservice.onmessage((msg) {
-      if (chatId == null) {
-        chatId = msg.ChatId;
-      }
-      provider.addMessage(msg);
+      provider.loadChatHistory(widget.reseverid);
+
+      Future.delayed(const Duration(seconds: 1), () {
+        print('😂${provider.messages.length}');
+      });
+
+      chatservice.connect();
+
+      chatservice.onmessage((Message msg) {
+        if (msg.data != null) {
+          provider.addMessage(msg.data!);
+        }
+      });
     });
   }
 
   void sendMessage() {
     final text = _messagecontroller.text.trim();
     if (text.isEmpty) return;
-    final currentuser = context.read<Userprovider>().User!;
-    final message = Chatclass(
-      ChatId: chatId ?? 0,
-      reseverId: widget.reseverid,
-      senderId: currentuser.Id,
-      massageId: 0,
-      text: text,
-      timenow: DateTime.now(),
+
+    final currentUser = context.read<Userprovider>().User;
+    if (currentUser == null) return;
+
+    final message = ChatMessage(
+      id: null,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+      roomId: widget.reseverid.toString(),
+      userId: currentUser.Id.toString(),
+      type: ChatMessageType.text,
+      content: text,
     );
+
+    // send to socket
     chatservice.sendmessage(message);
+
+    // optimistic update
     context.read<Chatprovider>().addMessage(message);
+
     _messagecontroller.clear();
   }
 
   @override
+  void dispose() {
+    _messagecontroller.dispose();
+    chatservice.socket.disconnect();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final chatprovider = context.watch<Chatprovider>();
-    final currentuser = context.read<Userprovider>().User!;
+    final currentUser = context.read<Userprovider>().User;
+
+    final messages = chatprovider.messages.reversed.toList();
+
     return Scaffold(
-      appBar: appbar(width: width),
+      appBar: appbar(width: MediaQuery.of(context).size.width),
       body: Column(
         children: [
           Expanded(
             child: ListView.builder(
               reverse: true,
-              itemCount: chatprovider.messages.length,
+              itemCount: messages.length,
               itemBuilder: (context, index) {
-                final msg = chatprovider
-                    .messages[chatprovider.messages.length - 1 - index];
+                final msg = messages[index];
+
                 return ChatBuble(
-                  text: msg!.text,
-                  time: msg.timenow.toString(),
-                  sanderID: msg.senderId,
-                  currentuser: currentuser,
+                  text: msg.content,
+                  time: msg.createdAt?.toString() ?? '',
+                  sanderID: msg.userId,
+                  currentuser: currentUser!,
                 );
               },
             ),
           ),
+
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-            color: Colors.grey.shade100,
+            color: isDark ? Colors.grey.shade900 : Colors.grey.shade100,
             child: Row(
               children: [
                 Expanded(
@@ -88,11 +115,7 @@ class _ChatpageState extends State<Chatpage> {
                     decoration: InputDecoration(
                       hintText: "Type a message...",
                       filled: true,
-                      fillColor: Colors.white,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 15,
-                        vertical: 10,
-                      ),
+                      fillColor: isDark ? Colors.grey.shade800 : Colors.white,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25),
                         borderSide: BorderSide.none,

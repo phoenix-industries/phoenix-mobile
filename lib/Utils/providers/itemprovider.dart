@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:phoenix/Utils/class/itemBuyclass.dart';
 import 'package:phoenix/Utils/service/itemService.dart';
 
 class Itemprovider extends ChangeNotifier {
-  List items = [];
+  List<ItemBuyclass> items = [];
   bool isloading = false;
 
   Future<void> recomdationitem() async {
@@ -11,6 +12,7 @@ class Itemprovider extends ChangeNotifier {
     try {
       items = await Itemservice.getrecomendationItem();
     } catch (e) {
+      debugPrint('😂$e');
       items = [];
     } finally {
       isloading = false;

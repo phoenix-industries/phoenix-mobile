@@ -1,17 +1,15 @@
 import 'package:phoenix/Utils/class/ItemSellClass.dart';
 import 'package:phoenix/Utils/class/itemBuyclass.dart';
-import 'package:phoenix/Utils/providers/userprovider.dart';
 import 'package:phoenix/Utils/service/ApiClient.dart';
-import 'package:provider/provider.dart';
 
 class Itemservice {
   static Future<List<ItemBuyclass>> getrecomendationItem() async {
     try {
       final response = await Apiclient.dio.get(
-        '/products', //endpoint
+        '/api/v1/products', //endpoint
       );
       if (response.statusCode == 200) {
-        List data = response.data['products'];
+        List data = response.data['data'];
         return data.map((item) => ItemBuyclass.fromJson(item)).toList();
       } else {
         throw Exception('Failed to load products');
@@ -22,13 +20,13 @@ class Itemservice {
     }
   }
 
-  static Future<List<ItemBuyclass>> getitem(String category) async {
+  static Future<List<ItemBuyclass>> getitem(String category_id) async {
     try {
       final response = await Apiclient.dio.get(
-        '/products/category/$category', //endpoint
+        '/api/v1/products?category_id=$category_id', //endpoint
       );
       if (response.statusCode == 200) {
-        List data = response.data['products'];
+        List data = response.data['data'];
         return data.map((item) => ItemBuyclass.fromJson(item)).toList();
       } else {
         throw Exception('Failed to load products');
@@ -42,17 +40,16 @@ class Itemservice {
   static Future<bool> additem(Itemsellclass item) async {
     try {
       final response = await Apiclient.dio.post(
-        '/products/add', //endpoint
+        '/api/v1/products', //endpoint
         data: item.toJson(),
       );
-      print(response.data);
-      if (response.statusCode == 200 || response.statusCode == 201) {
+      if (response.statusCode == 204) {
         return true;
       } else {
         throw Exception('Failed to add product');
       }
     } catch (e) {
-      print("Error during API call: $e");
+      print("👍Error during API call: $e");
       return false;
     }
   }

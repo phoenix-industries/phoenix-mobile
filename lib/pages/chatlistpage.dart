@@ -27,25 +27,26 @@ class _ChatlistpageState extends State<Chatlistpage> {
     return Scaffold(
       appBar: appbar(width: width),
       body: listprovider.isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : listprovider.chats.isEmpty
-          ? Center(
+          ? const Center(
               child: Text(
                 'No chats yet',
-                style: TextStyle(color: Color(0xfff43f06), fontSize: 25),
+                style: TextStyle(color: Color(0xfff43f06), fontSize: 18),
               ),
             )
           : ListView.builder(
               itemCount: listprovider.chats.length,
               itemBuilder: (context, index) {
                 final chats = listprovider.chats[index];
+
                 return Chatsummeybubble(
                   chatsummery: chats,
                   ontap: () {
                     Navigator.pushNamed(
                       context,
                       '/chatpage',
-                      arguments: chats.chatId,
+                      arguments: chats.id,
                     );
                   },
                 );

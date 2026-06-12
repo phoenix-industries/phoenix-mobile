@@ -1,58 +1,35 @@
-import 'package:phoenix/Utils/class/UserClass.dart';
-
 class Itemsellclass {
-  List<String> images;
-  String productTitle;
+  String? image_id;
+  String name;
   String description;
-  String? Brand;
-  String Category;
+  bool donated;
+  String category_id;
   String Condation;
-  String? Price;
-  String Location;
-  String type;
-  DateTime uploadtime;
-  UserClass User;
+  int? Price;
+  String? Brand;
 
   Itemsellclass({
-    required this.images,
-    required this.productTitle,
+    this.image_id,
+    required this.name,
+    required this.donated,
     required this.description,
-    required this.Category,
+    required this.category_id,
     required this.Condation,
-    required this.Location,
     this.Brand,
     this.Price,
-    required this.type,
-    required this.uploadtime,
-    required this.User,
   });
 
   Map<String, dynamic> toJson() => {
-    "title": productTitle,
+    "name": name,
     "description": description,
-    "category": Category,
+    "category_id": category_id,
     "condition": Condation,
-    "location": Location,
-    "type": type,
-    "images": images,
-    "price": Price,
-    'uploadTime': uploadtime.toIso8601String(),
-    'User': User.toJson(),
+    "donated": donated,
+    "brand": Brand,
+    "image_id": image_id,
+    "price": Price ?? 0,
+    "minimum_age": 18,
+    "maximum_age": 99,
+    "target_gender": "male",
   };
-
-  factory Itemsellclass.fromJson(Map<String, dynamic> json) {
-    return Itemsellclass(
-      images: List<String>.from(json['image'] ?? []),
-      productTitle: json['title'] ?? '',
-      description: json['description'] ?? '',
-      Category: json['category'] ?? '',
-      Condation: json['condation'] ?? '',
-      Location: json['location'],
-      Price: json['price'].toString(),
-      Brand: json['Brand'],
-      type: json['type'] ?? '',
-      uploadtime: DateTime.parse(json['uploadtime']),
-      User: UserClass.fromJson(json['user']),
-    );
-  }
 }

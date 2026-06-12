@@ -1,34 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:phoenix/Utils/class/categoryClass.dart';
 
-class Categoriesbottem extends StatefulWidget {
+class Categoriesbottem extends StatelessWidget {
+  final List<Categoryclass> categories;
+  final String selectedCategory;
   final Function(String) oncategoryslected;
-  Categoriesbottem({super.key, required this.oncategoryslected});
 
-  @override
-  State<Categoriesbottem> createState() => CategoriesbottemState();
-}
-
-class CategoriesbottemState extends State<Categoriesbottem> {
-  List<String> categories = [
-    // "All Products",
-    // "Electronics",
-    // "Fashion",
-    // "Home",
-    // "Sports",
-    // "Books",
-    // "Toys",
-    "beauty",
-    "fragrances",
-    "furniture",
-    "groceries",
-    "home-decoration",
-    "kitchen-accessories",
-    "laptops",
-  ];
-  String selectedCategory = "beauty";
-  String getSelectedCategory() {
-    return selectedCategory;
-  }
+  const Categoriesbottem({
+    super.key,
+    required this.categories,
+    required this.oncategoryslected,
+    required this.selectedCategory,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -36,24 +19,24 @@ class CategoriesbottemState extends State<Categoriesbottem> {
       spacing: 10,
       runSpacing: 10,
       children: categories.map((category) {
-        bool isSelected = category == selectedCategory;
+        final isSelected = category.id == selectedCategory;
+
         return ChoiceChip(
-          label: Text(category),
+          label: Text(category.name),
           selected: isSelected,
-          onSelected: (selected) {
-            setState(() {
-              selectedCategory = category;
-            });
-            widget.oncategoryslected(category);
+          onSelected: (_) {
+            if (category.id == selectedCategory) return;
+
+            oncategoryslected(category.id);
           },
-          selectedColor: Colors.orange,
-          backgroundColor: Colors.white,
+          selectedColor: const Color(0xfff0500a),
+          backgroundColor: Theme.of(context).cardColor,
           labelStyle: TextStyle(
-            color: isSelected ? Colors.white : Colors.orange,
+            color: isSelected ? Colors.white : const Color(0xfff0500a),
           ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
-            side: BorderSide(color: Colors.orange),
+            side: const BorderSide(color: Color(0xfff0500a)),
           ),
         );
       }).toList(),

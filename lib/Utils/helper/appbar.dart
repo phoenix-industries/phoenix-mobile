@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:phoenix/pages/Profilepage.dart';
 
 class appbar extends StatelessWidget implements PreferredSizeWidget {
   const appbar({super.key, required this.width});
@@ -10,11 +11,18 @@ class appbar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+
+      shape: Border(
+        bottom: BorderSide(
+          color: Theme.of(context).colorScheme.outline,
+          width: 1.5,
+        ),
+      ),
       title: Row(
         children: [
           Image.asset(
-            'assets/images/logo.jpeg',
+            'assets/images/Phoenix.png',
             height: width * 0.12,
             width: width * 0.12,
           ),
@@ -42,15 +50,44 @@ class appbar extends StatelessWidget implements PreferredSizeWidget {
         ],
       ),
       actions: [
-        IconButton(
-          onPressed: () {},
-          icon: Icon(Icons.notifications_active_rounded),
-          color: Colors.black,
+        // Notifications button
+        Tooltip(
+          message: "Go to chats",
+          decoration: BoxDecoration(
+            color: Color(0xfff0500a),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          textStyle: TextStyle(color: Colors.white),
+          waitDuration: const Duration(
+            milliseconds: 500,
+          ), // delay before showing
+          child: IconButton(
+            onPressed: () {
+              Navigator.pushNamed(context, '/chats');
+            },
+            icon: const Icon(Icons.message_outlined),
+          ),
         ),
-        IconButton(
-          onPressed: () {},
-          icon: Icon(Icons.person),
-          color: Colors.black,
+        //profile button
+        Tooltip(
+          message: "Go to Profile",
+          decoration: BoxDecoration(
+            color: Color(0xfff0500a),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          textStyle: TextStyle(color: Colors.white),
+          waitDuration: const Duration(
+            milliseconds: 500,
+          ), // delay before showing
+          child: IconButton(
+            onPressed: () {
+              final currentRoute = ModalRoute.of(context)?.settings.name;
+              if (currentRoute != '/profile') {
+                Navigator.pushNamed(context, '/profile');
+              }
+            },
+            icon: const Icon(Icons.person),
+          ),
         ),
       ],
     );

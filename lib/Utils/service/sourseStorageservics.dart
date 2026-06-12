@@ -1,18 +1,37 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class Soursestorageservics {
-  final FlutterSecureStorage storage = FlutterSecureStorage();
-  Future<void> savetoken(String token) async {
-    await storage.write(key: 'token', value: token);
-    debugPrint("😂SAVE TOKEN = $token");
+  final FlutterSecureStorage storage = const FlutterSecureStorage();
+
+  // save both tokens
+  Future<void> saveTokens({
+    required String accessToken,
+    required String refreshToken,
+  }) async {
+    await storage.write(key: 'access_token', value: accessToken);
+
+    await storage.write(key: 'refresh_token', value: refreshToken);
   }
 
-  Future<String?> gettoken() async {
-    return await storage.read(key: 'token');
+  // save new access token only
+  Future<void> saveAccessToken(String token) async {
+    await storage.write(key: 'access_token', value: token);
   }
 
-  Future<void> deletetoken() async {
-    await storage.delete(key: 'token');
+  // get access token
+  Future<String?> getAccessToken() async {
+    return await storage.read(key: 'access_token');
+  }
+
+  // get refresh token
+  Future<String?> getRefreshToken() async {
+    return await storage.read(key: 'refresh_token');
+  }
+
+  // delete all tokens (logout)
+  Future<void> deleteTokens() async {
+    await storage.delete(key: 'access_token');
+
+    await storage.delete(key: 'refresh_token');
   }
 }

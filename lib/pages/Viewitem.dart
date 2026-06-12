@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:phoenix/Utils/class/itemBuyclass.dart';
 import 'package:phoenix/Utils/helper/appbar.dart';
+import 'package:phoenix/Utils/helper/ordersummary.dart';
 
 class Viewitem extends StatefulWidget {
   const Viewitem({super.key});
@@ -10,14 +12,14 @@ class Viewitem extends StatefulWidget {
 }
 
 class _ViewitemState extends State<Viewitem> {
-  int _selectedImage = 0;
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
+
     final item = ModalRoute.of(context)!.settings.arguments as ItemBuyclass;
+
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: appbar(width: width),
       body: Container(
         margin: EdgeInsets.symmetric(
@@ -26,9 +28,12 @@ class _ViewitemState extends State<Viewitem> {
         ),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.grey.shade300, width: 1.5),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.outline,
+            width: 1.5,
+          ),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: .06),
@@ -38,8 +43,9 @@ class _ViewitemState extends State<Viewitem> {
           ],
         ),
         child: ListView(
-          physics: BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           children: [
+            /// IMAGE
             Container(
               height: 300,
               margin: EdgeInsets.symmetric(
@@ -50,7 +56,7 @@ class _ViewitemState extends State<Viewitem> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Colors.grey.shade300, width: 1.5),
+                border: Border.all(color: Colors.grey.shade300),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: .06),
@@ -59,298 +65,253 @@ class _ViewitemState extends State<Viewitem> {
                   ),
                 ],
               ),
-              child: PageView.builder(
-                itemCount: item.images.length,
-                onPageChanged: (index) {
-                  setState(() {
-                    _selectedImage = index;
-                  });
+              child: Image.network(
+                'https://osama.alwaysdata.net/files/v1/download/${item.imageId}',
+                fit: BoxFit.cover,
+                loadingBuilder: (context, child, progress) {
+                  if (progress == null) return child;
+                  return const Center(child: CircularProgressIndicator());
                 },
-                itemBuilder: (context, index) {
-                  return Image.network(item.images[index], fit: BoxFit.cover);
+                errorBuilder: (context, error, stackTrace) {
+                  return Image.network(
+                    'https://cdn-icons-png.flaticon.com/512/616/616408.png',
+                    fit: BoxFit.cover,
+                  );
                 },
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(item.images.length, (index) {
-                return Container(
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 3,
-                    vertical: 8,
-                  ),
-                  width: _selectedImage == index ? 12 : 8,
-                  height: _selectedImage == index ? 12 : 8,
-                  decoration: BoxDecoration(
-                    color: _selectedImage == index
-                        ? Color(0xfff0500a)
-                        : Colors.grey,
-                    shape: BoxShape.circle,
-                  ),
-                );
-              }),
-            ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+
+            /// NAME
             Text(
               item.itemName,
-              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+
+            SizedBox(height: height * 0.01),
+
+            /// CATEGORY
             Align(
               alignment: Alignment.centerLeft,
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Theme.of(context).cardColor,
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: Colors.grey.shade300, width: 1),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: .06),
-                      blurRadius: 12,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
+                  border: Border.all(
+                    color: Theme.of(context).colorScheme.outline,
+                  ),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.sell, color: Color(0xfff0500a), size: 18),
+                    const Icon(Icons.sell, color: Color(0xfff0500a), size: 18),
                     Text(
-                      item.category,
-                      style: TextStyle(color: Colors.black, fontSize: 18),
+                      item.categoryName,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurface,
+                        fontSize: 18,
+                      ),
                     ),
                   ],
                 ),
               ),
             ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-            Row(
-              children: [
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
 
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: Colors.grey.shade300,
-                        width: 1.5,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: .06),
-                          blurRadius: 12,
-                          offset: const Offset(0, 5),
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.calendar_month_rounded,
-                          color: Color(0xfff0500a),
-                          size: 18,
-                        ),
-                        Text(
-                          item.time,
-                          style: TextStyle(color: Colors.black, fontSize: 18),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(width: MediaQuery.of(context).size.width * 0.07),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Color(0xfff0500a),
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: Colors.grey.shade300, width: 1),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: .06),
-                          blurRadius: 12,
-                          offset: const Offset(0, 5),
-                        ),
-                      ],
-                    ),
-                    child: Text(
-                      item.Condation,
-                      style: TextStyle(color: Colors.white, fontSize: 18),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.03),
-            Text(
-              '${item.price} EGP',
-              style: TextStyle(color: Color(0xfff0500a), fontSize: 40),
-            ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+            SizedBox(height: height * 0.01),
+
+            /// DATE + CONDITION
             Row(
               children: [
-                Icon(Icons.location_on, color: Colors.grey),
-                Text(item.location, style: TextStyle(color: Colors.grey)),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).cardColor,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: Theme.of(context).colorScheme.outline,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.calendar_month_rounded,
+                        color: Color(0xfff0500a),
+                        size: 18,
+                      ),
+                      Text(
+                        DateFormat('dd MMM yyyy').format(item.time),
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const Spacer(),
+
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: const Color(0xfff0500a),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Text(
+                    item.condition,
+                    style: const TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                ),
               ],
             ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+
+            SizedBox(height: height * 0.03),
+
+            /// PRICE
             Text(
+              "${item.price} EGP",
+              style: const TextStyle(color: Color(0xfff0500a), fontSize: 40),
+            ),
+
+            SizedBox(height: height * 0.02),
+
+            /// LOCATION
+            Row(
+              children: [
+                const Icon(Icons.location_on, color: Colors.grey),
+                Text(item.userCity, style: const TextStyle(color: Colors.grey)),
+              ],
+            ),
+
+            SizedBox(height: height * 0.03),
+
+            /// DESCRIPTION
+            const Text(
               'Product Description',
               style: TextStyle(color: Color(0xfff0500a), fontSize: 28),
             ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-            Text(item.description),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.04),
 
+            SizedBox(height: height * 0.01),
+
+            Text(item.description),
+
+            SizedBox(height: height * 0.04),
+
+            /// USER CARD
             Container(
-              margin: EdgeInsets.symmetric(
-                horizontal: width * 0.05,
-                vertical: height * 0.05,
-              ),
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Colors.grey.shade300, width: 1.5),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: .06),
-                    blurRadius: 12,
-                    offset: const Offset(0, 5),
-                  ),
-                ],
+                border: Border.all(color: Colors.grey.shade300),
               ),
               child: Column(
                 children: [
                   Row(
                     children: [
-                      Container(
-                        height: 40,
-                        width: 40,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: Color(0xfff0500a),
-                            width: 2,
-                          ),
-                          image: DecorationImage(
-                            image: item.User.image != null
-                                ? NetworkImage(item.User.image!)
-                                : const AssetImage('assets/images/logo.jpeg'),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
+                      CircleAvatar(
+                        radius: 20,
+                        backgroundImage: item.imageId != null
+                            ? NetworkImage(
+                                'https://osama.alwaysdata.net/files/v1/download/${item.imageId}',
+                              )
+                            : const AssetImage('assets/images/logo.jpeg')
+                                  as ImageProvider,
                       ),
-                      SizedBox(width: MediaQuery.of(context).size.width * 0.04),
+                      const SizedBox(width: 10),
                       Text(
-                        item.User.name,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 22,
+                        item.userName,
+                        style: const TextStyle(
+                          fontSize: 20,
                           fontWeight: FontWeight.bold,
+                          color: Colors.grey,
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                  Center(
-                    child: Text(
-                      item.User.Bio!,
-                      style: TextStyle(color: Colors.black, fontSize: 13),
-                    ),
-                  ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+
+                  const SizedBox(height: 10),
+
                   Row(
                     children: [
-                      Icon(
-                        Icons.location_city,
-                        color: Color(0xfff0500a),
-                        size: 20,
-                      ),
-                      SizedBox(width: MediaQuery.of(context).size.width * 0.01),
+                      const Icon(Icons.location_city, color: Color(0xfff0500a)),
+                      const SizedBox(width: 5),
                       Text(
-                        item.User.governorate!,
-                        style: TextStyle(color: Colors.black, fontSize: 18),
+                        item.userGovernorate,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey,
+                        ),
                       ),
                     ],
                   ),
                 ],
               ),
             ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.05),
-            Center(
-              child: Container(
-                height: 55,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  gradient: const LinearGradient(
-                    begin: Alignment.bottomLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Color(0xfffec517), Color(0xfff43f06)],
-                  ),
-                ),
-                child: InkWell(
-                  onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      '/chatpage',
-                      arguments: item.User.Id,
-                    );
-                  },
-                  child: Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.chat_outlined, color: Colors.white),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.01,
-                        ),
 
-                        Text(
-                          'Chat',
-                          style: TextStyle(color: Colors.white, fontSize: 18),
-                        ),
-                      ],
-                    ),
+            SizedBox(height: height * 0.05),
+
+            /// CHAT
+            Container(
+              height: 55,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                gradient: const LinearGradient(
+                  colors: [Color(0xfffec517), Color(0xfff43f06)],
+                ),
+              ),
+              child: InkWell(
+                onTap: () {
+                  Navigator.pushNamed(
+                    context,
+                    '/chatpage',
+                    arguments: item.userId,
+                  );
+                },
+                child: const Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.chat_outlined, color: Colors.white),
+                      SizedBox(width: 5),
+                      Text('Chat', style: TextStyle(color: Colors.white)),
+                    ],
                   ),
                 ),
               ),
             ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-            Center(
-              child: Container(
-                height: 55,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: Color(0xfff43f06)),
-                ),
-                child: InkWell(
-                  onTap: () {},
-                  child: Center(
-                    child: Center(
-                      child: Text(
-                        'BUY NOW',
-                        style: TextStyle(
-                          color: Color(0xfff43f06),
-                          fontSize: 18,
-                        ),
+
+            const SizedBox(height: 10),
+
+            /// BUY
+            Container(
+              height: 55,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: Color(0xfff43f06)),
+              ),
+              child: InkWell(
+                onTap: () {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    backgroundColor: Theme.of(context).cardColor,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(20),
                       ),
                     ),
+                    builder: (_) => OrderSummarySheet(item: item),
+                  );
+                },
+                child: const Center(
+                  child: Text(
+                    'BUY NOW',
+                    style: TextStyle(color: Color(0xfff43f06), fontSize: 18),
                   ),
                 ),
               ),

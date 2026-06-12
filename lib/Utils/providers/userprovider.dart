@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phoenix/Utils/class/UserClass.dart';
+import 'package:phoenix/Utils/service/usreservice.dart';
 
 class Userprovider extends ChangeNotifier {
   UserClass? _user;
@@ -8,6 +9,12 @@ class Userprovider extends ChangeNotifier {
 
   void setuser(UserClass user) {
     _user = user;
+    notifyListeners();
+  }
+
+  Future<void> refreshUsre() async {
+    final updateduser = await Usreservice.getCurrentuser();
+    _user = updateduser;
     notifyListeners();
   }
 

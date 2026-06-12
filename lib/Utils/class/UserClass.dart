@@ -1,13 +1,12 @@
 class UserClass {
-  int Id;
+  String Id;
   String name;
   String phone;
   String email;
   String? image;
-  int age;
-  String? Bio;
   String? governorate;
   String? city;
+  String? address;
 
   UserClass({
     required this.Id,
@@ -15,23 +14,20 @@ class UserClass {
     required this.email,
     required this.phone,
     this.image,
-    required this.age,
-    this.Bio,
     this.governorate,
-    this.city
-   
+    this.city,
+    this.address,
   });
   factory UserClass.fromJson(Map<String, dynamic> json) {
     return UserClass(
-      Id: json['id']??0,
+      Id: json['id'] ?? '0',
       name: json['name'] ?? 'unknown',
       email: json['email'] ?? 'phoenix@gmail.com',
       phone: json['phone'] ?? '01...........',
-      image: json['image'],
-      Bio: json['Bio'] ?? 'Possionate about sustainable trading.',
-      governorate: json['governorate'] ?? 'cairo',
-      city: json['city']??'maadi',
-      age: json['age']?? 25,
+      image: json['image'] ?? '',
+      governorate: json['governorate'] ?? 'unknown',
+      city: json['city'] ?? 'unknown',
+      address: json['address'] ?? 'unknown',
     );
   }
 
@@ -42,10 +38,8 @@ class UserClass {
       'email': email,
       'phone': phone,
       'image': image,
-      'Bio': Bio,
       'governorate': governorate,
       'city': city,
-      'age': age,
     };
   }
 }

@@ -1,26 +1,40 @@
 class Chatsummery {
-  final int chatId;
-  final int userId;
-  final String name;
-  final String lastmessagel;
-  final String time;
-  final String? image;
+  final String id;
+  final String title;
+  final String type;
+
+  final String lastMessage;
+  final String lastMessageUserId;
+  final String lastMessageUserName;
+  final DateTime? lastMessageTime;
+
   Chatsummery({
-    required this.chatId,
-    required this.userId,
-    required this.name,
-    required this.lastmessagel,
-    required this.time,
-    this.image,
+    required this.id,
+    required this.title,
+    required this.type,
+    required this.lastMessage,
+    required this.lastMessageUserId,
+    required this.lastMessageUserName,
+    this.lastMessageTime,
   });
+
   factory Chatsummery.fromjson(Map<String, dynamic> json) {
+    final lastMsg = json['last_message'];
+
     return Chatsummery(
-      chatId: json['chatId'] ?? 0,
-      userId: json['userId'] ?? 0,
-      name: json['name'] ?? 'unknown',
-      lastmessagel: json['lastmessage'] ?? 'unknown',
-      time: json['time'] ?? 'unknow',
-      image: json['image'] ,
+      id: json['id']?.toString() ?? '',
+      title: json['title'] ?? '',
+      type: json['type'] ?? '',
+
+      lastMessage: lastMsg?['content'] ?? '',
+      lastMessageUserId: lastMsg?['user_id']?.toString() ?? '',
+      lastMessageUserName: lastMsg?['user_name'] ?? '',
+
+      lastMessageTime:
+          lastMsg?['created_at'] != null &&
+              lastMsg['created_at'].toString().isNotEmpty
+          ? DateTime.parse(lastMsg['created_at'])
+          : null,
     );
   }
 }

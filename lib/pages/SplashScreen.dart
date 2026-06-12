@@ -33,7 +33,7 @@ class _SplashscreenState extends State<Splashscreen>
     _controller.forward();
 
     Timer(Duration(seconds: 5), () {
-      Navigator.pushNamed(context, "/login");
+      Navigator.pushReplacementNamed(context, '/login');
     });
   }
 
@@ -46,7 +46,6 @@ class _SplashscreenState extends State<Splashscreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -54,7 +53,7 @@ class _SplashscreenState extends State<Splashscreen>
             SlideTransition(
               position: _logoAnimation,
               child: Image.asset(
-                'assets/images/logo.jpeg',
+                'assets/images/Phoenix.png',
                 height: 500,
                 width: 500,
               ),
