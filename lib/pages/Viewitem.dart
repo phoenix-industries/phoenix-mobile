@@ -295,18 +295,33 @@ class _ViewitemState extends State<Viewitem> {
                 border: Border.all(color: Color(0xfff43f06)),
               ),
               child: InkWell(
-                onTap: () {
-                  showModalBottomSheet(
+                onTap: () async {
+                  final result = await showModalBottomSheet<String>(
                     context: context,
                     isScrollControlled: true,
-                    backgroundColor: Theme.of(context).cardColor,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(20),
-                      ),
-                    ),
-                    builder: (_) => OrderSummarySheet(item: item),
+                    builder: (ctx) => OrderSummarySheet(item: item),
                   );
+
+                  // 👇 user closed sheet
+                  if (result == null) return;
+
+                  if (result == "success") {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Payment Success ✅")),
+                    );
+                  } else if (result.contains("insufficient")) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("😢 Product will be available soon"),
+                      ),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('😢 Product will be available soon'),
+                      ),
+                    );
+                  }
                 },
                 child: const Center(
                   child: Text(

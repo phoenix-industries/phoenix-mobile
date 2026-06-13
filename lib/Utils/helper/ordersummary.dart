@@ -15,28 +15,21 @@ class OrderSummarySheet extends StatefulWidget {
 class _OrderSummarySheetState extends State<OrderSummarySheet> {
   bool loading = false;
 
-  Future<void> confirmOrder() async {
+  Future<String?> confirmOrder() async {
     setState(() => loading = true);
 
-    final service = PaymentService();
+    try {
+      final result = await PaymentService().confirmPayment({
+        "products": [
+          {"id": widget.item.id, "quantity": 1},
+        ],
+      });
 
-    final success = await service.confirmPayment({
-      "amount": widget.item.price,
-      "currency": "egp",
-      "description": widget.item.itemName,
-    });
-
-    setState(() => loading = false);
-
-    if (success) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Payment Success ✅")));
-      Navigator.pop(context);
-    } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Payment Failed ❌")));
+      return result; // success / error string
+    } finally {
+      if (mounted) {
+        setState(() => loading = false);
+      }
     }
   }
 
@@ -60,8 +53,8 @@ class _OrderSummarySheetState extends State<OrderSummarySheet> {
 
           const SizedBox(height: 20),
 
-          Row(
-            children: const [
+          const Row(
+            children: [
               Icon(Icons.shopping_bag_outlined),
               SizedBox(width: 10),
               Text(
@@ -77,12 +70,19 @@ class _OrderSummarySheetState extends State<OrderSummarySheet> {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(12),
-                child: Image.network(
-                  'https://osama.alwaysdata.net/files/v1/download/${widget.item.imageId}',
-                  width: 70,
-                  height: 70,
-                  fit: BoxFit.cover,
-                ),
+                child: widget.item.imageId != null
+                    ? Image.network(
+                        'https://osama.alwaysdata.net/files/v1/download/${widget.item.imageId}',
+                        width: 70,
+                        height: 70,
+                        fit: BoxFit.cover,
+                      )
+                    : Image.asset(
+                        'assets/images/logo.jpeg',
+                        width: 70,
+                        height: 70,
+                        fit: BoxFit.cover,
+                      ),
               ),
 
               const SizedBox(width: 15),
@@ -161,7 +161,13 @@ class _OrderSummarySheetState extends State<OrderSummarySheet> {
                   borderRadius: BorderRadius.circular(15),
                 ),
               ),
-              onPressed: loading ? null : confirmOrder,
+              onPressed: loading
+                  ? null
+                  : () async {
+                      final result = await confirmOrder();
+                      if (!mounted) return;
+                      Navigator.pop(context, result);
+                    },
               child: loading
                   ? const CircularProgressIndicator(color: Colors.white)
                   : const Text(
