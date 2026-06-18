@@ -72,7 +72,7 @@ class Itemcard extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        "${items.price} EGP",
+                        "${items.price / 100} EGP",
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(

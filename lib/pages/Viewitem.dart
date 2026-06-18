@@ -172,7 +172,7 @@ class _ViewitemState extends State<Viewitem> {
 
             /// PRICE
             Text(
-              "${item.price} EGP",
+              "${item.price / 100} EGP",
               style: const TextStyle(color: Color(0xfff0500a), fontSize: 40),
             ),
 
